@@ -81,7 +81,6 @@ function displayLibrary(myLibrary) {
   deleteBtns.forEach(btn => {
     btn.addEventListener('click', event => {
       deleteBook(+btn.dataset.index);
-      console.log('dfs')
     })
   });
 }
