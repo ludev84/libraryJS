@@ -22,6 +22,8 @@ addBookToLibrary("Dune", "Frank Herbert", 350, false);
 addBookToLibrary("Flowers for Algernon", "Daniel Keyes", 250, true);
 addBookToLibrary("The Philosopher's Stone", "Colin Wilson", 325);
 
+displayLibrary(myLibrary);
+
 function displayLibrary(myLibrary) {
   const container = document.querySelector(".books");
   container.innerHTML = "";
@@ -40,11 +42,14 @@ function displayLibrary(myLibrary) {
   const thRead = document.createElement("th");
   thRead.textContent = "Read";
 
-  tr.append(thTitle, thAuthor, thPages, thRead);
+  const thDelete = document.createElement("th");
+  thDelete.textContent = "Delete";
+
+  tr.append(thTitle, thAuthor, thPages, thRead, thDelete);
   container.appendChild(tr);
 
   myLibrary.map(
-    book => {
+    (book, index) => {
       const tr = document.createElement("tr")
 
       const thTitle = document.createElement("th");
@@ -59,10 +64,31 @@ function displayLibrary(myLibrary) {
       const thRead = document.createElement("th");
       thRead.textContent = book.read ? "Yes" : "No";
 
-      tr.append(thTitle, thAuthor, thPages, thRead);
+      const thDelete = document.createElement("th");
+      const deleteBtn = document.createElement("button")
+      deleteBtn.classList.add("deleteBtn");
+      deleteBtn.dataset.index = index;
+      deleteBtn.textContent = "Delete";
+      thDelete.appendChild(deleteBtn);
+
+      tr.append(thTitle, thAuthor, thPages, thRead, thDelete);
       container.appendChild(tr);
     }
   )
+
+  const deleteBtns = document.querySelectorAll(".deleteBtn");
+
+  deleteBtns.forEach(btn => {
+    btn.addEventListener('click', event => {
+      deleteBook(+btn.dataset.index);
+      console.log('dfs')
+    })
+  });
+}
+
+function deleteBook(index) {
+  myLibrary.splice(index, 1);
+  displayLibrary(myLibrary);
 }
 
 // Form control
@@ -89,6 +115,7 @@ submitBtn.addEventListener('click', (event) => {
   const read = document.querySelector("#read");
 
   if (title.value === '' || author.value === '' || pages.value <= 0) {
+    // TODO: Add validation alerts
     event.preventDefault();
   } else {
     addBookToLibrary(title.value, author.value, +pages.value, Boolean(+read.value));
@@ -98,5 +125,3 @@ submitBtn.addEventListener('click', (event) => {
     event.preventDefault();
   }
 })
-
-displayLibrary(myLibrary);
