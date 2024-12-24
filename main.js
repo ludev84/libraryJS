@@ -10,6 +10,9 @@ function Book(title, author, pages, read) {
       this.read ? "read" : "not read yet"
     }`;
   };
+  this.changeReadStatus = function () {
+    this.read = !this.read;
+  }
 }
 
 function addBookToLibrary(title, author, pages, read=false) {
@@ -45,7 +48,10 @@ function displayLibrary(myLibrary) {
   const thDelete = document.createElement("th");
   thDelete.textContent = "Delete";
 
-  tr.append(thTitle, thAuthor, thPages, thRead, thDelete);
+  const thChangeRead = document.createElement("th");
+  thChangeRead.textContent = "Change read status";
+
+  tr.append(thTitle, thAuthor, thPages, thRead, thDelete, thChangeRead);
   container.appendChild(tr);
 
   myLibrary.map(
@@ -71,22 +77,41 @@ function displayLibrary(myLibrary) {
       deleteBtn.textContent = "Delete";
       thDelete.appendChild(deleteBtn);
 
-      tr.append(thTitle, thAuthor, thPages, thRead, thDelete);
+      const thChangeRead = document.createElement("th");
+      const changeBtn = document.createElement("button");
+      changeBtn.classList.add("changeBtn");
+      changeBtn.dataset.index = index;
+      changeBtn.textContent = "Change";
+      thChangeRead.appendChild(changeBtn);
+
+      tr.append(thTitle, thAuthor, thPages, thRead, thDelete, thChangeRead);
       container.appendChild(tr);
     }
   )
 
   const deleteBtns = document.querySelectorAll(".deleteBtn");
+  const changeBtns = document.querySelectorAll(".changeBtn");
 
   deleteBtns.forEach(btn => {
-    btn.addEventListener('click', event => {
+    btn.addEventListener('click', () => {
       deleteBook(+btn.dataset.index);
+    })
+  });
+
+  changeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      changeReadStatus(+btn.dataset.index);
     })
   });
 }
 
 function deleteBook(index) {
   myLibrary.splice(index, 1);
+  displayLibrary(myLibrary);
+}
+
+function changeReadStatus(index) {
+  myLibrary[index].changeReadStatus();
   displayLibrary(myLibrary);
 }
 
