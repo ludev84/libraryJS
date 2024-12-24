@@ -1,3 +1,19 @@
 table, th, td {
-    border: 1px solid;
-  }
+  border: 1px solid;
+}
+
+::backdrop {
+  background-color: rgba(0,0,0,0.4);
+}
+
+input, select {
+  width: 100%;
+  padding: 4px 4px;
+  margin: 8px 0;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  background-color: #246fba67;
+}
