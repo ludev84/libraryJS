@@ -24,6 +24,25 @@ addBookToLibrary("The Philosopher's Stone", "Colin Wilson", 325);
 
 function displayLibrary(myLibrary) {
   const container = document.querySelector(".books");
+  container.innerHTML = "";
+
+  const tr = document.createElement("tr")
+
+  const thTitle = document.createElement("th");
+  thTitle.textContent = "Title";
+
+  const thAuthor = document.createElement("th");
+  thAuthor.textContent = "Author";
+
+  const thPages = document.createElement("th");
+  thPages.textContent = "Pages";
+
+  const thRead = document.createElement("th");
+  thRead.textContent = "Read";
+
+  tr.append(thTitle, thAuthor, thPages, thRead);
+  container.appendChild(tr);
+
   myLibrary.map(
     book => {
       const tr = document.createElement("tr")
@@ -41,7 +60,7 @@ function displayLibrary(myLibrary) {
       thRead.textContent = book.read ? "Yes" : "No";
 
       tr.append(thTitle, thAuthor, thPages, thRead);
-      container.appendChild(tr)
+      container.appendChild(tr);
     }
   )
 }
@@ -60,5 +79,24 @@ showButton.addEventListener("click", () => {
 closeButton.addEventListener("click", () => {
   dialog.close();
 });
+
+const submitBtn = document.querySelector("#submit");
+
+submitBtn.addEventListener('click', (event) => {
+  const title = document.querySelector("#title");
+  const author = document.querySelector("#author");
+  const pages = document.querySelector("#pages")
+  const read = document.querySelector("#read");
+
+  if (title.value === '' || author.value === '' || pages.value <= 0) {
+    event.preventDefault();
+  } else {
+    addBookToLibrary(title.value, author.value, +pages.value, Boolean(+read.value));
+    displayLibrary(myLibrary);
+    document.getElementById("myForm").reset();
+    dialog.close();
+    event.preventDefault();
+  }
+})
 
 displayLibrary(myLibrary);
