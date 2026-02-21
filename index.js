@@ -1,6 +1,7 @@
 const myLibrary = [];
 
 function Book(title, author, pages, read) {
+  this.id = crypto.randomUUID();
   this.title = title;
   this.author = author;
   this.pages = pages;
@@ -56,19 +57,19 @@ function displayLibrary(myLibrary) {
     // Create Change Status Button & attach listener immediately
     const changeBtn = document.createElement("button");
     changeBtn.classList.add("btn-change");
-    changeBtn.dataset.index = index;
+    changeBtn.dataset.id = book.id;
     changeBtn.textContent = "Change read status";
     changeBtn.addEventListener("click", () => {
-      changeReadStatus(index);
+      changeReadStatus(book.id);
     });
 
     // Create Delete Button & attach listener immediately
     const deleteBtn = document.createElement("button");
     deleteBtn.classList.add("btn-delete");
-    deleteBtn.dataset.index = index;
+    deleteBtn.dataset.id = book.id;
     deleteBtn.textContent = "Delete book";
     deleteBtn.addEventListener("click", () => {
-      deleteBook(index);
+      deleteBook(book.id);
     });
 
     // Append everything to the card, then the card to the container
@@ -91,13 +92,13 @@ function displayLibrary(myLibrary) {
   container.appendChild(newBookCard);
 }
 
-function deleteBook(index) {
-  myLibrary.splice(index, 1);
+function deleteBook(id) {
+  myLibrary.splice(myLibrary.findIndex(book => book.id === id), 1);
   displayLibrary(myLibrary);
 }
 
-function changeReadStatus(index) {
-  myLibrary[index].changeReadStatus();
+function changeReadStatus(id) {
+  myLibrary[myLibrary.findIndex(book => book.id === id)].changeReadStatus();
   displayLibrary(myLibrary);
 }
 
