@@ -12,10 +12,10 @@ function Book(title, author, pages, read) {
   };
   this.changeReadStatus = function () {
     this.read = !this.read;
-  }
+  };
 }
 
-function addBookToLibrary(title, author, pages, read=false) {
+function addBookToLibrary(title, author, pages, read = false) {
   const newBook = new Book(title, author, pages, read);
   myLibrary.push(newBook);
 }
@@ -42,7 +42,7 @@ function displayLibrary(myLibrary) {
     titleDiv.textContent = `Title: ${book.title}`;
 
     const authorDiv = document.createElement("div");
-    authorDiv.classList.add("card-author"); 
+    authorDiv.classList.add("card-author");
     authorDiv.textContent = `Author: ${book.author}`;
 
     const pagesDiv = document.createElement("div");
@@ -58,7 +58,7 @@ function displayLibrary(myLibrary) {
     changeBtn.classList.add("btn-change");
     changeBtn.dataset.index = index;
     changeBtn.textContent = "Change read status";
-    changeBtn.addEventListener('click', () => {
+    changeBtn.addEventListener("click", () => {
       changeReadStatus(index);
     });
 
@@ -67,7 +67,7 @@ function displayLibrary(myLibrary) {
     deleteBtn.classList.add("btn-delete");
     deleteBtn.dataset.index = index;
     deleteBtn.textContent = "Delete book";
-    deleteBtn.addEventListener('click', () => {
+    deleteBtn.addEventListener("click", () => {
       deleteBook(index);
     });
 
@@ -79,15 +79,14 @@ function displayLibrary(myLibrary) {
   // Re-create the static "New Book" card at the very end
   const newBookCard = document.createElement("div");
   newBookCard.classList.add("card", "new");
-  
+
   const newBookBtn = document.createElement("button");
   newBookBtn.textContent = "New Book";
-  // Optional: Attach your function to open the form/modal here
-  // newBookBtn.addEventListener("click", openNewBookModal);
+  // Attach your function to open the form/modal here
   newBookBtn.addEventListener("click", () => {
     dialog.showModal();
   });
-  
+
   newBookCard.appendChild(newBookBtn);
   container.appendChild(newBookCard);
 }
@@ -104,7 +103,6 @@ function changeReadStatus(index) {
 
 // Form control
 const dialog = document.querySelector("dialog");
-// const showButton = document.querySelector("dialog + button");
 const closeButton = document.querySelector("dialog button");
 
 // "Close" button closes the dialog
@@ -112,22 +110,26 @@ closeButton.addEventListener("click", () => {
   dialog.close();
 });
 
-const submitBtn = document.querySelector("#submit");
+const myForm = document.querySelector("#myForm");
 
-submitBtn.addEventListener('click', (event) => {
-  const title = document.querySelector("#title");
-  const author = document.querySelector("#author");
-  const pages = document.querySelector("#pages")
-  const read = document.querySelector("#read");
+myForm.addEventListener("submit", (event) => {
+  event.preventDefault(); // This stops the page from reloading
 
-  if (title.value === '' || author.value === '' || pages.value <= 0) {
+  // Grab the values
+  const title = document.querySelector("#title").value;
+  const author = document.querySelector("#author").value;
+  const pages = document.querySelector("#pages").value;
+  const read = document.querySelector("#read").checked;
+
+  if (title === '' || author === '' || pages <= 0) {
     // TODO: Add validation alerts
     event.preventDefault();
   } else {
-    addBookToLibrary(title.value, author.value, +pages.value, Boolean(+read.value));
+    addBookToLibrary(title, author, +pages, read);
     displayLibrary(myLibrary);
-    document.getElementById("myForm").reset();
-    dialog.close();
     event.preventDefault();
   }
-})
+
+  myForm.reset();
+  dialog.close();
+});
