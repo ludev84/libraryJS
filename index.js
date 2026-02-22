@@ -1,4 +1,8 @@
 const myLibrary = [];
+const container = document.querySelector(".cards");
+const myForm = document.querySelector("#myForm");
+const dialog = document.querySelector("dialog");
+const closeDialogButton = document.querySelector("dialog button");
 
 function Book(title, author, pages, read) {
   this.id = crypto.randomUUID();
@@ -29,7 +33,6 @@ addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, false);
 displayLibrary(myLibrary);
 
 function displayLibrary(myLibrary) {
-  const container = document.querySelector(".cards");
   container.innerHTML = "";
 
   myLibrary.forEach((book, index) => {
@@ -59,18 +62,12 @@ function displayLibrary(myLibrary) {
     changeBtn.classList.add("btn-change");
     changeBtn.dataset.id = book.id;
     changeBtn.textContent = "Change read status";
-    changeBtn.addEventListener("click", () => {
-      changeReadStatus(book.id);
-    });
 
     // Create Delete Button & attach listener immediately
     const deleteBtn = document.createElement("button");
     deleteBtn.classList.add("btn-delete");
     deleteBtn.dataset.id = book.id;
     deleteBtn.textContent = "Delete book";
-    deleteBtn.addEventListener("click", () => {
-      deleteBook(book.id);
-    });
 
     // Append everything to the card, then the card to the container
     card.append(titleDiv, authorDiv, pagesDiv, readDiv, changeBtn, deleteBtn);
@@ -102,16 +99,27 @@ function changeReadStatus(id) {
   displayLibrary(myLibrary);
 }
 
-// Form control
-const dialog = document.querySelector("dialog");
-const closeButton = document.querySelector("dialog button");
+// Add event listener to every click on a change/delete button
+container.addEventListener('click', (event) => {
+  // Check if what we clicked has the 'btn-delete' class
+  if (event.target.classList.contains('btn-delete')) {
+    const bookId = event.target.dataset.id;
+    deleteBook(bookId);
+  }
 
-// "Close" button closes the dialog
-closeButton.addEventListener("click", () => {
-  dialog.close();
+  // Check if what we clicked has the 'btn-change' class
+  if (event.target.classList.contains('btn-change')) {
+    const bookId = event.target.dataset.id;
+    changeReadStatus(bookId);
+  }
 });
 
-const myForm = document.querySelector("#myForm");
+// Form control and dialog
+
+// "Close" button closes the dialog
+closeDialogButton.addEventListener("click", () => {
+  dialog.close();
+});
 
 myForm.addEventListener("submit", (event) => {
   event.preventDefault(); // This stops the page from reloading
