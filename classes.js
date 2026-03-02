@@ -1,36 +1,61 @@
-const myLibrary = [];
 const container = document.querySelector(".cards");
 const myForm = document.querySelector("#myForm");
 const dialog = document.querySelector("dialog");
 const closeDialogButton = document.querySelector("dialog button");
 
-function Book(title, author, pages, read) {
-  this.id = crypto.randomUUID();
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-  this.info = function () {
+class Book {
+  constructor(title, author, pages, read) {
+    this.id = crypto.randomUUID();
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
+  getInfo() {
     return `${this.title} by ${this.author}, ${this.pages} pages, ${
       this.read ? "read" : "not read yet"
     }`;
-  };
-  this.changeReadStatus = function () {
+  }
+  changeReadStatus() {
     this.read = !this.read;
-  };
+  }
 }
 
-function addBookToLibrary(title, author, pages, read = false) {
-  const newBook = new Book(title, author, pages, read);
-  myLibrary.push(newBook);
+class Library {
+  constructor() {
+    this.books = [];
+  }
+  getBooks() {
+    return this.books;
+  }
+  addBook(title, author, pages, read = false) {
+    const newBook = new Book(title, author, pages, read);
+    this.books.push(newBook);
+  }
+  deleteBook(id) {
+    const index = this.books.findIndex((book) => book.id === id);
+    if (index !== -1) {
+      this.books.splice(index, 1)
+    }
+  }
+  changeReadStatus(id) {
+    const index = this.books.findIndex((book) => book.id === id);
+    if (index !== -1) {
+      this.books[index].changeReadStatus();
+    }
+  }
 }
 
-addBookToLibrary("Parable of the Sower", "Octavia E. Butler", 279, true);
-addBookToLibrary("Dune", "Frank Herbert", 350, false);
-addBookToLibrary("Flowers for Algernon", "Daniel Keyes", 250, true);
-addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, false);
+const myLibrary = new Library();
+myLibrary.addBook("Parable of the Sower", "Octavia E. Butler", 279, true);
+myLibrary.addBook("Dune", "Frank Herbert", 350, false);
+myLibrary.addBook("Flowers for Algernon", "Daniel Keyes", 250, true);
+myLibrary.addBook("The Hobbit", "J.R.R. Tolkien", 295, false);
 
-displayLibrary(myLibrary);
+displayLibrary(myLibrary.getBooks())
+
+
+// TODO: Create a class controller to manage the UI
 
 function displayLibrary(myLibrary) {
   container.innerHTML = "";
@@ -90,25 +115,25 @@ function displayLibrary(myLibrary) {
 }
 
 function deleteBook(id) {
-  myLibrary.splice(myLibrary.findIndex(book => book.id === id), 1);
-  displayLibrary(myLibrary);
+  myLibrary.deleteBook(id)
+  displayLibrary(myLibrary.getBooks());
 }
 
 function changeReadStatus(id) {
-  myLibrary[myLibrary.findIndex(book => book.id === id)].changeReadStatus();
-  displayLibrary(myLibrary);
+  myLibrary.changeReadStatus(id)
+  displayLibrary(myLibrary.getBooks());
 }
 
 // Add event listener to every click on a change/delete button
-container.addEventListener('click', (event) => {
+container.addEventListener("click", (event) => {
   // Check if what we clicked has the 'btn-delete' class
-  if (event.target.classList.contains('btn-delete')) {
+  if (event.target.classList.contains("btn-delete")) {
     const bookId = event.target.dataset.id;
     deleteBook(bookId);
   }
 
   // Check if what we clicked has the 'btn-change' class
-  if (event.target.classList.contains('btn-change')) {
+  if (event.target.classList.contains("btn-change")) {
     const bookId = event.target.dataset.id;
     changeReadStatus(bookId);
   }
@@ -130,12 +155,12 @@ myForm.addEventListener("submit", (event) => {
   const pages = document.querySelector("#pages").value;
   const read = document.querySelector("#read").checked;
 
-  if (title === '' || author === '' || pages <= 0) {
+  if (title === "" || author === "" || pages <= 0) {
     // TODO: Add validation alerts
     event.preventDefault();
   } else {
-    addBookToLibrary(title, author, +pages, read);
-    displayLibrary(myLibrary);
+    myLibrary.addBook(title, author, +pages, read);
+    displayLibrary(myLibrary.getBooks());
     event.preventDefault();
   }
 
